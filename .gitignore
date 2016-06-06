@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Windows:
 Thumbs.db  
 ehthumbs.db  
@@ -18,11 +19,18 @@ db.ini
 deploy_key_rsa
 
 .idea/*
+=======
+>>>>>>> 911294e1906821897d43349721ee504e6c96811d
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 
+<<<<<<< HEAD
+=======
+# C extensions
+*.so
+>>>>>>> 911294e1906821897d43349721ee504e6c96811d
 
 # Distribution / packaging
 .Python
@@ -78,4 +86,7 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+<<<<<<< HEAD
 
+=======
+>>>>>>> 911294e1906821897d43349721ee504e6c96811d
