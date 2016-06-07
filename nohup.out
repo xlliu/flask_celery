@@ -416,3 +416,11 @@ Please specify a different user using the -u option.
 User information: uid=0 euid=0 gid=0 egid=0
 
   uid=uid, euid=euid, gid=gid, egid=egid,
+/usr/local/python/lib/python2.7/site-packages/celery/platforms.py:812: RuntimeWarning: You are running the worker with superuser privileges, which is
+absolutely not recommended!
+
+Please specify a different user using the -u option.
+
+User information: uid=0 euid=0 gid=0 egid=0
+
+  uid=uid, euid=euid, gid=gid, egid=egid,
