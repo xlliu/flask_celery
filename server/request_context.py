@@ -190,6 +190,7 @@ class RequestAction(object):
 
             q_title = ""
             question_type = None
+            option = {} 
             for k, v in question.items():
                 if "qid" == k:
                     temp_qid = {"_id": ObjectId(str(v))}
@@ -312,7 +313,7 @@ class RequestAction(object):
                     """
                     if question_type == 60:
                         for k_60, v_60 in v.items():
-                            q_title_temp = document_option.find_one({"_id": ObjectId(str(k_60))}).get('title')
+                            q_title_temp = document_option.find_one({"_id": ObjectId(str(k_60)[7:])}).get('title')
                             temp_struct_data[q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = v_60[0]
                             # temp_struct_data[q_title+"_%s" % q_title_temp] = "类型60，矩阵跳过"
                         break  # 单项打分题50
