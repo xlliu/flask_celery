@@ -453,6 +453,10 @@ class RequestAction(object):
             self.logger.info("============ delete: %s ============" % str(temp_aid))
             collection.delete_many({"0d序号": str(result_answer.get('_id'))})
         self.logger.info("********==== handle: %s ====********" % str(temp_aid))
+        k_list = temp_struct_data.keys()
+        v_list = temp_struct_data.values()
+        temp_struct_data["k_list"] = k_list
+        temp_struct_data["v_list"] = v_list
         result = collection.insert_one(temp_struct_data)
         if result:
             return "success"
