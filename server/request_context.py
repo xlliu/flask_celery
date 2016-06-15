@@ -148,6 +148,10 @@ class RequestAction(object):
                             temp_struct_data.append(q_title_t.replace(r".", "d"))
 
         return temp_struct_data, lag
+        
+    def generator_options(self, pid, document_project):
+        pass
+        
 
     def handle_data(self, aid, document_answer, document_question, document_question_struct, document_option,
                     document_option_matrix, document_project):
@@ -313,7 +317,7 @@ class RequestAction(object):
                     """
                     if question_type == 60:
                         for k_60, v_60 in v.items():
-                            q_title_temp = document_option.find_one({"_id": ObjectId(str(k_60)[7:])}).get('title')
+                            q_title_temp = document_option.find_one({"_id": ObjectId(str(k_60)[7:] if "option_" == str(k_60)[0:7] else str(k_60))}).get('title')
                             temp_struct_data[q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = v_60[0]
                             # temp_struct_data[q_title+"_%s" % q_title_temp] = "类型60，矩阵跳过"
                         break  # 单项打分题50
