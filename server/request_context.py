@@ -23,15 +23,13 @@ from collections import OrderedDict
 
 from common.mongodb_conn import mongodb_conn
 
-
 class BreakException():
     pass
-
 
 class RequestAction(object):
     def __init__(self):
         self.logger = logging.getLogger("log_output")
-        set_mongo_conn_edy = mongodb_conn("10.10.0.2", 27017, "xyt_survey", flag=0)
+        set_mongo_conn_edy = mongodb_conn("10.10.0.7", 27017, "xyt_survey", flag=0)
         # set_mongo_conn_edy = mongodb_conn("120.131.64.225", 27017, "xyt_survey", flag=1)
         set_mongo_conn_edy_insert = mongodb_conn("10.10.0.2", 27017, "xyt_survey_data", flag=0)
         # set_mongo_conn_edy = mongodb_conn("120.131.70.8", 27017, "xyt_survey_survey", flag=1)
@@ -112,48 +110,176 @@ class RequestAction(object):
 
         lag = p_struct.get("change_log", 0)
         temp_struct_data = []
+        option_titles = []
+        q_cid = []
         for question in p_struct.get("questionpage_list"):
             for q_struct in question.get("question_list"):
                 question_type = q_struct.get("question_type")
+                q_options = q_struct.get("option_list")
+                q_custom = q_struct.get("custom_attr")
                 q_title_temp = q_struct.get("title")
                 q_title_temp = html2text.html2text(q_title_temp)
-
-                #text = re.match("(&nbsp;)*\d+\\\*(&nbsp;)*\.\\\*(&nbsp;)*", q_title_temp)
-                #if text:
-                #    n = len(text.group())
-                #else:
-                #    n = 0
-                #q_title = q_title_temp[n:]
                 q_title = q_title_temp
 
                 if question_type == 70:
                     pass
-                if question_type in (2, 3, 6):
+                if question_type in (2,):
+                    q_cid_t = q_struct.get("cid")
+                    option_titles_min = []
                     temp_struct_data.append(q_title.replace(r".", "d"))
+                    for qos in q_options:
+                        otitle = qos.get("title")
+                        option_titles_min.append(otitle)
+                    q_cid.append(q_cid_t)
+                    option_titles.append(option_titles_min)
 
-                if question_type in (4, 5):
+                if question_type in (3,):
+                    q_cid_t = q_struct.get("cid")
+                    option_titles_min = []
+                    temp_struct_data.append(q_title.replace(r".", "d"))
+                    for qos in q_options:
+                        otitle = qos.get("title")
+                        option_titles_min.append(otitle)
+                    q_cid.append(q_cid_t)
+                    option_titles.append(option_titles_min)
+
+                if question_type in (6,):
+                    q_cid_t = q_struct.get("cid")
+                    option_titles_min = []
+                    temp_struct_data.append(q_title.replace(r".", "d"))
+                    for qos in q_options:
+                        option_titles_min.append([])
+                    q_cid.append(q_cid_t)
+                    option_titles.append(option_titles_min)
+
+                if question_type in (4,):
+                    q_cid_t = q_struct.get("cid")
+                    q_cid_t_t = q_cid_t
                     for q_ in q_struct.get("matrixrow_list"):
+                        ocid = q_.get("cid")
+                        q_cid_t = q_cid_t_t + ocid
+                        option_titles_min = []
                         q_title_t = q_title +"_%s" % html2text.html2text(q_.get("title"))
                         temp_struct_data.append(q_title_t.replace(r".", "d"))
+                        for qos in q_options:
+                            otitle = qos.get("title")
+                            option_titles_min.append(otitle)
+                        q_cid.append(q_cid_t)
+                        option_titles.append(option_titles_min)
+                        
+                if question_type in (5,):
+                    q_cid_t = q_struct.get("cid")
+                    q_cid_t_t = q_cid_t
+                    for q_ in q_struct.get("matrixrow_list"):
+                        ocid = q_.get("cid")
+                        q_cid_t = q_cid_t_t + ocid
+                        option_titles_min = []
+                        q_title_t = q_title +"_%s" % html2text.html2text(q_.get("title"))
+                        temp_struct_data.append(q_title_t.replace(r".", "d"))
+                        for qos in q_options:
+                            otitle = qos.get("title")
+                            option_titles_min.append(otitle)
+                        q_cid.append(q_cid_t)
+                        option_titles.append(option_titles_min)
 
-                if question_type in (8, 50, 60, 95):
+                if question_type in (8,):
+                    q_cid_t = q_struct.get("cid")
+                    q_cid_t_t = q_cid_t
+                    qn = 0
                     for q_ in q_struct.get("option_list"):
+                        qn += 1
+                        ocid = q_.get("cid")
+                        q_cid_t = q_cid_t_t + ocid + str(qn)
+                        option_titles_min = []
                         q_title_t = q_title + "_%s" % html2text.html2text(q_.get("title"))
                         temp_struct_data.append(q_title_t.replace(r".", "d"))
+                        for qos in q_options:
+                            otitle = qos.get("title")
+                            option_titles_min.append(otitle)
+                        q_cid.append(q_cid_t)
+                        option_titles.append(option_titles_min)
+                        
+                if question_type in (50,):
+                    q_cid_t = q_struct.get("cid")
+                    q_cid_t_t = q_cid_t
+                    for q_ in q_struct.get("option_list"):
+                        option_titles_min = []
+                        q_title_t = q_title + "_%s" % html2text.html2text(q_.get("title"))
+                        temp_struct_data.append(q_title_t.replace(r".", "d"))
+                        min_max = xrange(q_custom.get("min_answer_num"), q_custom.get("max_answer_num")+1)
+                        ocid = q_.get("cid")
+                        q_cid_t = q_cid_t_t + ocid
+                        q_cid.append(q_cid_t)
+                        option_titles_min.extend(min_max)
+                        option_titles.append(option_titles_min)
+                        
+                if question_type in (60,):
+                    q_cid_t = q_struct.get("cid")
+                    q_cid_t_t = q_cid_t
+                    for q_ in q_struct.get("option_list"):
+                        option_titles_min = []
+                        q_title_t = q_title + "_%s" % html2text.html2text(q_.get("title"))
+                        temp_struct_data.append(q_title_t.replace(r".", "d"))
+                        ocid = q_.get("cid")
+                        q_cid_t = q_cid_t_t + ocid
+                        for qos in q_options:
+                            option_titles_min.append([])
+                        q_cid.append(q_cid_t)
+                        option_titles.append(option_titles_min)
+                        
+                if question_type in (95,):
+                    q_cid_t = q_struct.get("cid")
+                    q_cid_t_t = q_cid_t
+                    for q_ in q_struct.get("option_list"):
+                        option_titles_min = []
+                        q_title_t = q_title + "_%s" % html2text.html2text(q_.get("title"))
+                        temp_struct_data.append(q_title_t.replace(r".", "d"))
+                        ocid = q_.get("cid")
+                        q_cid_t = q_cid_t_t + ocid
+                        for qos in q_options:
+                            option_titles_min.append([])
+                        q_cid.append(q_cid_t)
+                        option_titles.append(option_titles_min)
 
-                if question_type in (7, 100):
+                if question_type in (7,):
+                    q_cid_t = q_struct.get("cid")
+                    q_cid_t_t = q_cid_t
                     for qm_ in q_struct.get("matrixrow_list"):
+                        omcid = qm_.get("cid")
                         for qo_ in q_struct.get("option_list"):
+                            option_titles_min = []
                             q_title_t = html2text.html2text(q_title + "_%s_%s" % (qm_.get("title"), qo_.get("title")))
                             temp_struct_data.append(q_title_t.replace(r".", "d"))
+                            min_max = xrange(q_custom.get("min_answer_num"), q_custom.get("max_answer_num")+1)
+                            ocid = qo_.get("cid")
+                            q_cid_t = q_cid_t_t + omcid + ocid
+                            q_cid.append(q_cid_t)
+                            option_titles_min.extend(min_max)
+                            option_titles.append(option_titles_min)
 
-        return temp_struct_data, lag
+                if question_type in (100,):
+                    q_cid_t = q_struct.get("cid")
+                    q_cid_t_t = q_cid_t
+                    for qm_ in q_struct.get("matrixrow_list"):
+                        omcid = qm_.get("cid")
+                        for qo_ in q_struct.get("option_list"):
+                            option_titles_min = []
+                            q_title_t = html2text.html2text(q_title + "_%s_%s" % (qm_.get("title"), qo_.get("title")))
+                            temp_struct_data.append(q_title_t.replace(r".", "d"))
+                            ocid = qo_.get("cid")
+                            q_cid_t = q_cid_t_t + omcid + ocid
+                            for qos in q_options:
+                                option_titles_min.append([])
+                            q_cid.append(q_cid_t)
+                            option_titles.append(option_titles_min)
+
+        return temp_struct_data, option_titles, q_cid, lag
         
     def generator_options(self, pid, document_project):
         pass
         
 
-    def handle_data(self, aid, document_answer, document_question, document_question_struct, document_option,
+    def handle_data(self, aid, document_answer, document_question, document_question_struc, document_option,
                     document_option_matrix, document_project):
         temp_aid = {"_id": ObjectId(str(aid))}
         #self.logger.info("inot func handle_data, temp_aid: %s" %temp_aid)
@@ -161,19 +287,18 @@ class RequestAction(object):
         temp_struct_data = OrderedDict()
         result_answer = document_answer.find_one(temp_aid)
         pid = result_answer.get('project_id')
-        title_m, lag = self.generator_title(pid, document_project)
-        temp_struct_data[u"0d开始时间"] = result_answer.get('starttime')
-        temp_struct_data[u"0d结束时间"] = result_answer.get('endtime')
-        temp_struct_data[u"0d序号"] = str(result_answer.get('_id'))
-        temp_struct_data[u"0d用户"] = result_answer.get('uuid')
-        temp_struct_data[u"0d版本"] = lag
-        temp_struct_data = OrderedDict(temp_struct_data.items()+zip(title_m, [""]*len(title_m)))
+        title_m, option_t, q_cid, lag = self.generator_title(pid, document_project)
+        temp_struct_data[u"开始时间"] = result_answer.get('starttime')
+        temp_struct_data[u"结束时间"] = result_answer.get('endtime')
+        temp_struct_data[u"序号"] = str(result_answer.get('_id'))
+        temp_struct_data[u"用户"] = result_answer.get('uuid')
+        temp_struct_data[u"版本"] = lag
+        temp_struct_data = OrderedDict(temp_struct_data.items()+zip(q_cid, [""]*len(q_cid)))
         # temp_struct_data[u"schoolCode"] = result_answer.get('schoolCode', 'None')
         answers = result_answer.get('answers')
         if not answers:
             return
 
-        num = 0
         for question in answers:
             """
             {
@@ -198,29 +323,20 @@ class RequestAction(object):
             for k, v in question.items():
                 if "qid" == k:
                     temp_qid = {"_id": ObjectId(str(v))}
-                    #self.logger.info("Into deal with key, qid: %s" %temp_qid)
                     q_struct = document_question.find_one(temp_qid)
                     if not q_struct:
                         temp_qid = {"_id": str(v)}
-                        #self.logger.info("Into deal with key, key is str, qid: %s" %temp_qid)
                         q_struct = document_question.find_one(temp_qid)
                         if not q_struct:
                             self.logger.info("next return")
                             return
-                    q_title_temp_kk = q_struct.get('title')
-                    q_title_temp_kk = html2text.html2text(q_title_temp_kk)
-                    #text = re.match("(&nbsp;)*\d+\\\*(&nbsp;)*\.\\\*(&nbsp;)*", q_title_temp_kk)
-                    #if text:
-                    #    n = len(text.group())
-                    #else:
-                    #    n = 0
-                    #q_title = q_title_temp_kk[n:]
+                    # q_title_temp_kk = q_struct.get('title')
+                    # q_title_temp_kk = html2text.html2text(q_title_temp_kk)
+                    # q_title = q_title_temp_kk
+                    # q_title = q_title.replace(r".", "d")
+                    
+                    q_title_temp_kk = q_struct.get('cid')
                     q_title = q_title_temp_kk
-                    # q_title = q_struct.get('title')
-
-                    q_title = q_title.replace(r".", "d")
-                    # q_title = "(%s)%s"%(num,q_title)
-                    num += 1
                     question_type = q_struct.get('question_type')
                     break
 
@@ -271,7 +387,7 @@ class RequestAction(object):
                     if question_type == 4:
                     # if question_type == 5:
                         for k_4, v_4 in v.items():
-                            q_title_temp = document_option_matrix.find_one({"_id": ObjectId(str(k_4))}).get('title')
+                            q_title_temp = document_option_matrix.find_one({"_id": ObjectId(str(k_4))}).get('cid')
                             temp_value_id = {"_id": ObjectId(str(v_4[0]))}
                             a_context = document_option.find_one(temp_value_id)
                             a_value = a_context.get('title')
@@ -279,7 +395,7 @@ class RequestAction(object):
                             #temp_struct_data[
                         #        q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = html2text.html2text(a_value)
                             temp_struct_data[
-                                q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = a_value
+                                q_title + "%s" % q_title_temp)] = a_value
                         break
                     # 表格多选题5
                     """
@@ -294,7 +410,7 @@ class RequestAction(object):
                     if question_type == 5:
                     # if question_type == 4:
                         for k_5, v_5 in v.items():
-                            q_title_temp = document_option_matrix.find_one({"_id": ObjectId(str(k_5))}).get('title')
+                            q_title_temp = document_option_matrix.find_one({"_id": ObjectId(str(k_5))}).get('cid')
                             a_value_temp = []
                             for v_5v in v_5:
                                 temp_value_id = {"_id": ObjectId(str(v_5v[0]))}
@@ -303,7 +419,7 @@ class RequestAction(object):
                             a_value = a_value_temp
 
                             #temp_struct_data[q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = html2text.html2text(",".join(a_value))
-                            temp_struct_data[q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = ",".join(a_value)
+                            temp_struct_data[q_title + "%s" % q_title_temp] = ",".join(a_value)
                         break
                     # 选择排序题60
                     """
@@ -317,8 +433,8 @@ class RequestAction(object):
                     """
                     if question_type == 60:
                         for k_60, v_60 in v.items():
-                            q_title_temp = document_option.find_one({"_id": ObjectId(str(k_60)[7:] if "option_" == str(k_60)[0:7] else str(k_60))}).get('title')
-                            temp_struct_data[q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = v_60[0]
+                            q_title_temp = document_option.find_one({"_id": ObjectId(str(k_60)[7:] if "option_" == str(k_60)[0:7] else str(k_60))}).get('cid')
+                            temp_struct_data[q_title + "%s" % q_title_temp] = v_60[0]
                             # temp_struct_data[q_title+"_%s" % q_title_temp] = "类型60，矩阵跳过"
                         break  # 单项打分题50
                     """
@@ -332,8 +448,8 @@ class RequestAction(object):
                     """
                     if question_type == 50:
                         for k_50, v_50 in v.items():
-                            q_title_temp = document_option.find_one({"_id": ObjectId(str(k_50))}).get('title')
-                            temp_struct_data[q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = v_50[0]
+                            q_title_temp = document_option.find_one({"_id": ObjectId(str(k_50))}).get('cid')
+                            temp_struct_data[q_title + "%s" % q_title_temp] = v_50[0]
                         break
                     # 多项打分题7
                     """
@@ -353,14 +469,14 @@ class RequestAction(object):
                     """
                     if question_type == 7:
                         for k_7, v_7 in v.items():
-                            q_title_temp_1 = document_option_matrix.find_one({"_id": ObjectId(str(k_7))}).get('title')
+                            q_title_temp_1 = document_option_matrix.find_one({"_id": ObjectId(str(k_7))}).get('cid')
                             for k_7k, v_7v in v_7.items():
-                                q_title_temp_2 = document_option.find_one({"_id": ObjectId(str(k_7k))}).get('title')
+                                q_title_temp_2 = document_option.find_one({"_id": ObjectId(str(k_7k))}).get('cid')
 
                                 #temp_struct_data[html2text.html2text(q_title + "_%s_%s" % (q_title_temp_1,
                                 #                                       q_title_temp_2)).replace(r".", "d")] = html2text.html2text(v_7v)
-                                temp_struct_data[html2text.html2text(q_title + "_%s_%s" % (q_title_temp_1,
-                                                                       q_title_temp_2)).replace(r".", "d")] = v_7v
+                                temp_struct_data[q_title + "%s%s" % (q_title_temp_1,
+                                                                       q_title_temp_2)] = v_7v
                         break
                     # 单项填空题6 多行文本题6
                     """
@@ -394,10 +510,10 @@ class RequestAction(object):
                     """
                     if question_type == 95:
                         for k_95, v_95 in v.items():
-                            q_title_temp = document_option.find_one({"_id": ObjectId(str(k_95[0:-5]))}).get('title')
+                            q_title_temp = document_option.find_one({"_id": ObjectId(str(k_95[0:-5]))}).get('cid')
 
                             #temp_struct_data[q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = html2text.html2text(v_95)
-                            temp_struct_data[q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = v_95
+                            temp_struct_data[q_title + "%s" % q_title_temp] = v_95
                         break
                     # 表格填空题100
                     """
@@ -449,29 +565,20 @@ class RequestAction(object):
                         raise "====Question_type is None, Exception===="
                     break
         dev_excel_mapping = "pid_%s" % pid
-        # self.logger.info("generator db collection finally")
         collection = getattr(self.mongo_collection_edy_insert, dev_excel_mapping)
         # collection = getattr(self.mongo_collection, dev_excel_mapping)
-        c = collection.find({"0d序号": str(result_answer.get('_id'))}).count()
+        c = collection.find({"序号": str(result_answer.get('_id'))}).count()
         if c:
             self.logger.info("============ delete: %s ============" % str(temp_aid))
-            collection.delete_many({"0d序号": str(result_answer.get('_id'))})
+            collection.delete_many({"序号": str(result_answer.get('_id'))})
         self.logger.info("********==== handle: %s ====********" % str(temp_aid))
         k_list = temp_struct_data.keys()
         v_list = temp_struct_data.values()
         temp_struct_data["k_list"] = k_list
         temp_struct_data["v_list"] = v_list
+        temp_struct_data["options"] = option_t
+        temp_struct_data["short_title"] = k_list[0:5] + title_m
         result = collection.insert_one(temp_struct_data)
         if result:
-            return "success"
+           return "success"
         return "false"
-
-        #except Exception as e:
-        #    self.logger.warning("mongo insert Exception eg: %s", e)
-        #    temp_data_false = {
-        #        "pid": pid,
-        #        "aid": aid
-        #    }
-        #    dev_excel_mapping = "insert_errer"
-        #    getattr(self.mongo_collection_edy_insert, dev_excel_mapping).insert_one(temp_data_false)
-        #    return "false"
