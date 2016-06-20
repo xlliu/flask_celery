@@ -126,7 +126,7 @@ class RequestAction(object):
                 if question_type in (2,):
                     q_cid_t = q_struct.get("cid")
                     option_titles_min = []
-                    temp_struct_data.append(q_title.replace(r".", "d"))
+                    temp_struct_data.append(q_title)
                     for qos in q_options:
                         otitle = qos.get("title")
                         option_titles_min.append(otitle)
@@ -136,7 +136,7 @@ class RequestAction(object):
                 if question_type in (3,):
                     q_cid_t = q_struct.get("cid")
                     option_titles_min = []
-                    temp_struct_data.append(q_title.replace(r".", "d"))
+                    temp_struct_data.append(q_title)
                     for qos in q_options:
                         otitle = qos.get("title")
                         option_titles_min.append(otitle)
@@ -146,7 +146,7 @@ class RequestAction(object):
                 if question_type in (6,):
                     q_cid_t = q_struct.get("cid")
                     option_titles_min = []
-                    temp_struct_data.append(q_title.replace(r".", "d"))
+                    temp_struct_data.append(q_title)
                     for qos in q_options:
                         option_titles_min.append([])
                     q_cid.append(q_cid_t)
@@ -159,8 +159,8 @@ class RequestAction(object):
                         ocid = q_.get("cid")
                         q_cid_t = q_cid_t_t + ocid
                         option_titles_min = []
-                        q_title_t = q_title +"_%s" % html2text.html2text(q_.get("title"))
-                        temp_struct_data.append(q_title_t.replace(r".", "d"))
+                        q_title_t = q_title +"%s" % html2text.html2text(q_.get("title"))
+                        temp_struct_data.append(q_title_t)
                         for qos in q_options:
                             otitle = qos.get("title")
                             option_titles_min.append(otitle)
@@ -174,8 +174,8 @@ class RequestAction(object):
                         ocid = q_.get("cid")
                         q_cid_t = q_cid_t_t + ocid
                         option_titles_min = []
-                        q_title_t = q_title +"_%s" % html2text.html2text(q_.get("title"))
-                        temp_struct_data.append(q_title_t.replace(r".", "d"))
+                        q_title_t = q_title +"%s" % html2text.html2text(q_.get("title"))
+                        temp_struct_data.append(q_title_t)
                         for qos in q_options:
                             otitle = qos.get("title")
                             option_titles_min.append(otitle)
@@ -191,8 +191,8 @@ class RequestAction(object):
                         ocid = q_.get("cid")
                         q_cid_t = q_cid_t_t + ocid + str(qn)
                         option_titles_min = []
-                        q_title_t = q_title + "_%s" % html2text.html2text(q_.get("title"))
-                        temp_struct_data.append(q_title_t.replace(r".", "d"))
+                        q_title_t = q_title + "%s" % html2text.html2text(q_.get("title"))
+                        temp_struct_data.append(q_title_t)
                         for qos in q_options:
                             otitle = qos.get("title")
                             option_titles_min.append(otitle)
@@ -204,8 +204,8 @@ class RequestAction(object):
                     q_cid_t_t = q_cid_t
                     for q_ in q_struct.get("option_list"):
                         option_titles_min = []
-                        q_title_t = q_title + "_%s" % html2text.html2text(q_.get("title"))
-                        temp_struct_data.append(q_title_t.replace(r".", "d"))
+                        q_title_t = q_title + "%s" % html2text.html2text(q_.get("title"))
+                        temp_struct_data.append(q_title_t)
                         min_max = xrange(q_custom.get("min_answer_num"), q_custom.get("max_answer_num")+1)
                         ocid = q_.get("cid")
                         q_cid_t = q_cid_t_t + ocid
@@ -218,8 +218,8 @@ class RequestAction(object):
                     q_cid_t_t = q_cid_t
                     for q_ in q_struct.get("option_list"):
                         option_titles_min = []
-                        q_title_t = q_title + "_%s" % html2text.html2text(q_.get("title"))
-                        temp_struct_data.append(q_title_t.replace(r".", "d"))
+                        q_title_t = q_title + "%s" % html2text.html2text(q_.get("title"))
+                        temp_struct_data.append(q_title_t)
                         ocid = q_.get("cid")
                         q_cid_t = q_cid_t_t + ocid
                         for qos in q_options:
@@ -232,8 +232,8 @@ class RequestAction(object):
                     q_cid_t_t = q_cid_t
                     for q_ in q_struct.get("option_list"):
                         option_titles_min = []
-                        q_title_t = q_title + "_%s" % html2text.html2text(q_.get("title"))
-                        temp_struct_data.append(q_title_t.replace(r".", "d"))
+                        q_title_t = q_title + "%s" % html2text.html2text(q_.get("title"))
+                        temp_struct_data.append(q_title_t)
                         ocid = q_.get("cid")
                         q_cid_t = q_cid_t_t + ocid
                         for qos in q_options:
@@ -248,8 +248,8 @@ class RequestAction(object):
                         omcid = qm_.get("cid")
                         for qo_ in q_struct.get("option_list"):
                             option_titles_min = []
-                            q_title_t = html2text.html2text(q_title + "_%s_%s" % (qm_.get("title"), qo_.get("title")))
-                            temp_struct_data.append(q_title_t.replace(r".", "d"))
+                            q_title_t = html2text.html2text(q_title + "%s%s" % (qm_.get("title"), qo_.get("title")))
+                            temp_struct_data.append(q_title_t)
                             min_max = xrange(q_custom.get("min_answer_num"), q_custom.get("max_answer_num")+1)
                             ocid = qo_.get("cid")
                             q_cid_t = q_cid_t_t + omcid + ocid
@@ -264,8 +264,8 @@ class RequestAction(object):
                         omcid = qm_.get("cid")
                         for qo_ in q_struct.get("option_list"):
                             option_titles_min = []
-                            q_title_t = html2text.html2text(q_title + "_%s_%s" % (qm_.get("title"), qo_.get("title")))
-                            temp_struct_data.append(q_title_t.replace(r".", "d"))
+                            q_title_t = html2text.html2text(q_title + "%s%s" % (qm_.get("title"), qo_.get("title")))
+                            temp_struct_data.append(q_title_t)
                             ocid = qo_.get("cid")
                             q_cid_t = q_cid_t_t + omcid + ocid
                             for qos in q_options:
@@ -395,7 +395,7 @@ class RequestAction(object):
                             #temp_struct_data[
                         #        q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = html2text.html2text(a_value)
                             temp_struct_data[
-                                q_title + "%s" % q_title_temp)] = a_value
+                                q_title + "%s" % q_title_temp] = a_value
                         break
                     # 表格多选题5
                     """
@@ -533,16 +533,16 @@ class RequestAction(object):
                     """
                     if question_type == 100:
                         for k_100, v_100 in v.items():
-                            q_title_temp_1 = document_option_matrix.find_one({"_id": ObjectId(str(k_100))}).get('title')
+                            q_title_temp_1 = document_option_matrix.find_one({"_id": ObjectId(str(k_100))}).get('cid')
                             for k_100k, v_100v in v_100.items():
-                                q_title_temp_2 = document_option.find_one({"_id": ObjectId(str(k_100k))}).get('title')
+                                q_title_temp_2 = document_option.find_one({"_id": ObjectId(str(k_100k))}).get('cid')
 
                                 #temp_struct_data[
                                 #    html2text.html2text(q_title + "_%s_%s" % (q_title_temp_1,
                                 #                          q_title_temp_2)).replace(r".", "d")] = html2text.html2text(v_100v)
                                 temp_struct_data[
-                                    html2text.html2text(q_title + "_%s_%s" % (q_title_temp_1,
-                                                          q_title_temp_2)).replace(r".", "d")] = v_100v
+                                    q_title + "%s%s" % (q_title_temp_1,
+                                                          q_title_temp_2)] = v_100v
                         break
                     """
                     {
@@ -556,10 +556,27 @@ class RequestAction(object):
                     """
                     if question_type == 8:
                         for k_8, v_8 in v.items():
-                            q_title_temp = document_option.find_one({"_id": ObjectId(str(k_8[0:-5]))}).get('title')
-
+                            q_title_temp = document_option.find_one({"_id": ObjectId(str(k_8[0:-5]))}).get('cid')
+                            q_title_temp_if = document_option.find_one({"_id": ObjectId(str(k_8[0:-5]))}).get('title')
                             #temp_struct_data[q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = html2text.html2text(v_8)
-                            temp_struct_data[q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = v_8
+                            if q_title_temp_if == "年"
+                                q8n = 1
+                            elif q_title_temp_if == "月"
+                                q8n = 2
+                            elif q_title_temp_if == "日"
+                                q8n = 3
+                            elif q_title_temp_if == "省份"
+                                q8n = 1
+                            elif q_title_temp_if == "城市"
+                                q8n = 2
+                            elif q_title_temp_if == "区/县"
+                                q8n = 3
+                            elif q_title_temp_if == "街道"
+                                q8n = 4
+                            else:
+                            q8n = "未识别"
+                            temp_struct_data[q_title + "%s%s" % (q_title_temp, str(q8n))] = v_8
+                            
                         break
                     if None == question_type:
                         raise "====Question_type is None, Exception===="
