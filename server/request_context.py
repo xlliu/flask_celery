@@ -31,7 +31,7 @@ class RequestAction(object):
         self.logger = logging.getLogger("log_output")
         set_mongo_conn_edy = mongodb_conn("10.10.0.7", 27017, "xyt_survey", flag=0)
         # set_mongo_conn_edy = mongodb_conn("120.131.64.225", 27017, "xyt_survey", flag=1)
-        set_mongo_conn_edy_insert = mongodb_conn("10.10.0.2", 27017, "xyt_survey_data", flag=0)
+        set_mongo_conn_edy_insert = mongodb_conn("10.10.0.2", 27017, "xyt_survey_data_two", flag=0)
         # set_mongo_conn_edy = mongodb_conn("120.131.70.8", 27017, "xyt_survey_survey", flag=1)
         # set_mongo_conn_edy = mongodb_conn("127.0.0.1", 27017, "xyt_survey")
         self.get_mongo_conn_edy = set_mongo_conn_edy.get_conn()
@@ -559,22 +559,22 @@ class RequestAction(object):
                             q_title_temp = document_option.find_one({"_id": ObjectId(str(k_8[0:-5]))}).get('cid')
                             q_title_temp_if = document_option.find_one({"_id": ObjectId(str(k_8[0:-5]))}).get('title')
                             #temp_struct_data[q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = html2text.html2text(v_8)
-                            if q_title_temp_if == "年"
+                            if q_title_temp_if == "年":
                                 q8n = 1
-                            elif q_title_temp_if == "月"
+                            elif q_title_temp_if == "月":
                                 q8n = 2
-                            elif q_title_temp_if == "日"
+                            elif q_title_temp_if == "日":
                                 q8n = 3
-                            elif q_title_temp_if == "省份"
+                            elif q_title_temp_if == "省份":
                                 q8n = 1
-                            elif q_title_temp_if == "城市"
+                            elif q_title_temp_if == "城市":
                                 q8n = 2
-                            elif q_title_temp_if == "区/县"
+                            elif q_title_temp_if == "区/县":
                                 q8n = 3
-                            elif q_title_temp_if == "街道"
+                            elif q_title_temp_if == "街道":
                                 q8n = 4
                             else:
-                            q8n = "未识别"
+                                q8n = "未识别"
                             temp_struct_data[q_title + "%s%s" % (q_title_temp, str(q8n))] = v_8
                             
                         break
