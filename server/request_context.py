@@ -570,7 +570,7 @@ class RequestAction(object):
         self.logger.info("********==== handle: %s ====********" % str(temp_aid))
         #k_list = temp_struct_data.keys()
         v_list = temp_struct_data.values()
-        #temp_struct_data["k_list"] = k_list
+        tsd["k_pid"] = q_cid
         tsd["v_list"] = v_list
         #temp_struct_data["options"] = option_t
         tsd["k_list"] = title_m
