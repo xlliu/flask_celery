@@ -286,11 +286,12 @@ class RequestAction(object):
         result_answer = document_answer.find_one(temp_aid)
         pid = result_answer.get('project_id')
         title_m, option_t, q_cid, lag = self.generator_title(pid, document_project)
-        temp_struct_data[u"开始时间"] = result_answer.get('starttime')
-        temp_struct_data[u"结束时间"] = result_answer.get('endtime')
-        temp_struct_data[u"序号"] = str(result_answer.get('_id'))
-        temp_struct_data[u"用户"] = result_answer.get('uuid')
-        temp_struct_data[u"版本"] = lag
+        tsd = {}
+        tsd[u"开始时间"] = result_answer.get('starttime')
+        tsd[u"结束时间"] = result_answer.get('endtime')
+        tsd[u"序号"] = str(result_answer.get('_id'))
+        tsd[u"用户"] = result_answer.get('uuid')
+        tsd[u"版本"] = lag
         temp_struct_data = OrderedDict(temp_struct_data.items()+zip(q_cid, [""]*len(q_cid)))
         # temp_struct_data[u"schoolCode"] = result_answer.get('schoolCode', 'None')
         answers = result_answer.get('answers')
@@ -567,13 +568,13 @@ class RequestAction(object):
             self.logger.info("============ delete: %s ============" % str(temp_aid))
             collection.delete_many({"序号": str(result_answer.get('_id'))})
         self.logger.info("********==== handle: %s ====********" % str(temp_aid))
-        k_list = temp_struct_data.keys()
+        #k_list = temp_struct_data.keys()
         v_list = temp_struct_data.values()
-        temp_struct_data["k_list"] = k_list
-        temp_struct_data["v_list"] = v_list
-        temp_struct_data["options"] = option_t
-        temp_struct_data["k_list"] = k_list[0:5] + title_m
-        result = collection.insert_one(temp_struct_data)
+        #temp_struct_data["k_list"] = k_list
+        tsd["v_list"] = v_list
+        #temp_struct_data["options"] = option_t
+        tsd["k_list"] = title_m
+        result = collection.insert_one(tsd)
         if result:
            return "success"
         return "false"
