@@ -38,15 +38,14 @@ logger = logging.getLogger("log_output")
 
 @app.route('/api/pid/<string:pid>_<int:skip>_<int:limit>')
 def pid_action(pid, skip, limit):
-    # for n in xrange(2):
     celery.send_task("ct.ctask.pid_action_task", args=[pid, limit, skip], queue="first_ct_queue2")
-    #    skip_4 += limit_3
-    # for n in xrange(6):
-    #celery.send_task("ct.ctask.pid_action_task", args=[pid, 11163, 1088840], queue="first_ct_queue2")
-    #     skip_4 += limit_3
-    # celery.send_task("ct.ctask.pid_action_task", args=[pid, limit, skip], queue="first_ct_queue3")
-    # pid_action_task.apply_async(args=[pid, limit, skip])
     return 'ok'
+    
+@app.route('/api/pid/<string:pid>_<int:skip>_<int:limit>')
+def pid_action_spss(pid, skip, limit):
+    celery.send_task("ct.ctask.pid_action_spss_task", args=[pid, limit, skip], queue="first_ct_queue2")
+    return 'ok'
+
 
 @app.route('/api/pid/all_pid')
 def all_pid_action():

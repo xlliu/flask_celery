@@ -35,3 +35,8 @@ def aid_action_task(aid):
 def all_pid():
     RequestAction().all_action()
     return "ok"
+    
+@celery.task()
+def pid_action_spss_task(pid, limit, skip):
+    RequestAction().question_action_spss(pid, limit, skip)
+    return 'ok'
