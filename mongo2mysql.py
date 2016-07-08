@@ -41,7 +41,7 @@ def pid_action(pid, skip, limit):
     celery.send_task("ct.ctask.pid_action_task", args=[pid, limit, skip], queue="first_ct_queue2")
     return 'ok'
     
-@app.route('/api/pid/<string:pid>_<int:skip>_<int:limit>')
+@app.route('/api/spss_pid/<string:pid>_<int:skip>_<int:limit>')
 def pid_action_spss(pid, skip, limit):
     celery.send_task("ct.ctask.pid_action_spss_task", args=[pid, limit, skip], queue="first_ct_queue2")
     return 'ok'
