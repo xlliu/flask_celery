@@ -29,7 +29,7 @@ class BreakException():
 class RequestAction(object):
     def __init__(self):
         self.logger = logging.getLogger("log_output")
-        set_mongo_conn_edy = mongodb_conn("10.10.0.5", 27017, "xyt_survey", flag=0)
+        set_mongo_conn_edy = mongodb_conn("10.10.0.2", 27017, "xyt_survey", flag=0)
         # set_mongo_conn_edy = mongodb_conn("120.131.64.225", 27017, "xyt_survey", flag=1)
         set_mongo_conn_edy_insert = mongodb_conn("10.10.0.2", 27017, "xyt_survey_data_two", flag=0)
         set_mongo_conn_edy_spss_format_insert = mongodb_conn("10.10.0.2", 27017, "xyt_survey_data_two_spss_format", flag=0)
@@ -75,6 +75,13 @@ class RequestAction(object):
             except:
                 pass
         self.close_connector()
+        
+    def answers_action_spss(self, aid):
+        try:
+            document_answer, document_question, document_question_struct, document_option, document_option_matrix, document_project = self.init_collection()
+            self.handle_data_spss(aid, document_answer, document_question, document_question_struct, document_option,document_option_matrix, document_project)
+        finally:
+            self.close_connector()
         
     def question_action_spss(self, pid, limit_num, skip_num):
         temp_id = {'project_id': pid}

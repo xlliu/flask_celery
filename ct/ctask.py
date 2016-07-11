@@ -37,6 +37,11 @@ def all_pid():
     return "ok"
     
 @celery.task()
+def aid_action_spss_task(aid):
+    RequestAction().answers_action_spss(aid)
+    return 'ok'
+
+@celery.task()
 def pid_action_spss_task(pid, limit, skip):
     RequestAction().question_action_spss(pid, limit, skip)
     return 'ok'
