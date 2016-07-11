@@ -59,7 +59,7 @@ def aid_action(aid):
     return "ok"
     
 @app.route('/api/spss_aid/<string:aid>')
-def aid_action(aid):
+def aid_action_spss(aid):
     celery.send_task("ct.ctask.aid_action_spss_task", args=[aid], queue="first_ct_queue")
     # aid_action_task.apply_async(args=[aid])
     return "ok"
