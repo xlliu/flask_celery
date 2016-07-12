@@ -4,7 +4,7 @@ import logging
 import logging.config
 import time
 from celery import Celery, platforms
-from flask import Flask
+from flask import Flask, jsonify
 
 from server.request_context import RequestAction
 
