@@ -39,42 +39,42 @@ logger = logging.getLogger("log_output")
 @app.route('/api/pid/<string:pid>_<int:skip>_<int:limit>')
 def pid_action(pid, skip, limit):
     celery.send_task("ct.ctask.pid_action_task", args=[pid, limit, skip], queue="first_ct_queue2")
-    return 'ok'
+    return jsonify({"data": 'ok'})
     
 @app.route('/api/spss_pid/<string:pid>_<int:skip>_<int:limit>')
 def pid_action_spss(pid, skip, limit):
     celery.send_task("ct.ctask.pid_action_spss_task", args=[pid, limit, skip], queue="first_ct_queue2")
-    return 'ok'
+    return jsonify({"data": 'ok'})
 
 
 @app.route('/api/pid/all_pid')
 def all_pid_action():
     celery.send_task("ct.ctask.all_pid", args=[], queue="first_ct_queue2")
-    return "ok"
+    return jsonify({"data": 'ok'})
 
 @app.route('/api/aid/<string:aid>')
 def aid_action(aid):
     celery.send_task("ct.ctask.aid_action_task", args=[aid], queue="first_ct_queue")
     # aid_action_task.apply_async(args=[aid])
-    return "ok"
+    return jsonify({"data": 'ok'})
     
 @app.route('/api/spss_aid/<string:aid>')
 def aid_action_spss(aid):
     celery.send_task("ct.ctask.aid_action_spss_task", args=[aid], queue="first_ct_queue")
     # aid_action_task.apply_async(args=[aid])
-    return "ok"
+    return jsonify({"data": 'ok'})
 
 
 @app.route('/api_1/aid/<string:aid>')
 def aid_action_o(aid):
     RequestAction().answers_action(aid)
-    return "ok"
+    return jsonify({"data": 'ok'})
 
 
 @app.route('/api_1/pid/<string:pid>_<int:limit>_<int:skip>')
 def pid_action_o(pid, limit, skip):
     RequestAction().question_action(pid, limit, skip)
-    return 'ok'
+    return jsonify({"data": 'ok'})
 
 
 @app.route('/celery/asyn_sum/<int:a>+<int:b>')
