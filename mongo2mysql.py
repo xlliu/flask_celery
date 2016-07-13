@@ -4,7 +4,7 @@ import logging
 import logging.config
 import time
 from celery import Celery, platforms
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 from server.request_context import RequestAction
 
@@ -43,8 +43,11 @@ def pid_action(pid, skip, limit):
     
 @app.route('/api/spss_pid/<string:pid>_<int:skip>_<int:limit>')
 def pid_action_spss(pid, skip, limit):
+    cb = request.args.get('callback', None)
+    
     celery.send_task("ct.ctask.pid_action_spss_task", args=[pid, limit, skip], queue="first_ct_queue2")
-    return "var data = {'data': 'ok'}"
+    rt = cb+"({'code': 'ok'})"
+    return rt
 
 
 @app.route('/api/pid/all_pid')
