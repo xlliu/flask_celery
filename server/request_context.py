@@ -334,7 +334,7 @@ class RequestAction(object):
                         otitle = qos.get("title")
                         oid = qos.get("_id")
                         ovalue = document_option.find_one({"_id": ObjectId(oid)})
-                        ovalue["ovalue"] = str(n)
+                        ovalue["ovalue"] = n
                         set_value_option.save(ovalue)
                         option_titles_min[str(n)] = otitle
                         n += 1
@@ -349,7 +349,7 @@ class RequestAction(object):
                     for qos in q_options:
                         oid = qos.get("_id")
                         ovalue = document_option.find_one({"_id": ObjectId(oid)})
-                        ovalue["ovalue"] = str(n)
+                        ovalue["ovalue"] = n
                         set_value_option.save(ovalue)
                         otitle = qos.get("title")
                         option_titles_min[str(n)] = otitle
@@ -384,7 +384,7 @@ class RequestAction(object):
                             val = set_value_option.find_one({"_id": ObjectId(oid)})
                             if not val:
                                 ovalue = document_option.find_one({"_id": ObjectId(oid)})
-                                ovalue["ovalue"] = str(n)
+                                ovalue["ovalue"] = n
                                 set_value_option.save(ovalue)
                             otitle = qos.get("title")
                             option_titles_min[str(n)] = otitle
@@ -407,7 +407,7 @@ class RequestAction(object):
                             val = set_value_option.find_one({"_id": ObjectId(oid)})
                             if not val:
                                 ovalue = document_option.find_one({"_id": ObjectId(oid)})
-                                ovalue["ovalue"] = str(n)
+                                ovalue["ovalue"] = n
                                 set_value_option.save(ovalue)
                             otitle = qos.get("title")
                             option_titles_min[str(n)] = otitle
@@ -464,7 +464,7 @@ class RequestAction(object):
                             val = set_value_option.find_one({"_id": ObjectId(oid)})
                             if not val:
                                 ovalue = document_option.find_one({"_id": ObjectId(oid)})
-                                ovalue["ovalue"] = str(n)
+                                ovalue["ovalue"] = n
                                 set_value_option.save(ovalue)
                             option_titles_min[str(n)] = otitle
                             n += 1
