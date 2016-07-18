@@ -314,6 +314,7 @@ class RequestAction(object):
         temp_struct_data = []
         option_titles = []
         q_cid = []
+        q_type = []
         for question in p_struct.get("questionpage_list"):
             for q_struct in question.get("question_list"):
                 question_type = q_struct.get("question_type")
@@ -327,7 +328,9 @@ class RequestAction(object):
                     pass
                 if question_type in (2,):
                     q_cid_t = q_struct.get("cid")
-                    option_titles_min = {}
+                    option_titles_key = []
+                    option_titles_val = []
+                    option_titles_min = [option_titles_key, option_titles_val]
                     temp_struct_data.append(q_title)
                     n = 1
                     for qos in q_options:
@@ -336,25 +339,31 @@ class RequestAction(object):
                         ovalue = document_option.find_one({"_id": ObjectId(oid)})
                         ovalue["ovalue"] = n
                         set_value_option.save(ovalue)
-                        option_titles_min[str(n)] = otitle
+                        option_titles_key.append(n)
+                        option_titles_val.append(otitle)
                         n += 1
                     q_cid.append(q_cid_t)
+                    q_type.append("int")
                     option_titles.append(option_titles_min)
 
                 if question_type in (3,):
                     q_cid_t = q_struct.get("cid")
-                    option_titles_min = {}
+                    option_titles_key = []
+                    option_titles_val = []
+                    option_titles_min = [option_titles_key, option_titles_val]
                     temp_struct_data.append(q_title)
                     n = 1
                     for qos in q_options:
                         oid = qos.get("_id")
                         ovalue = document_option.find_one({"_id": ObjectId(oid)})
-                        ovalue["ovalue"] = n
+                        ovalue["ovalue"] = str(n)
                         set_value_option.save(ovalue)
                         otitle = qos.get("title")
-                        option_titles_min[str(n)] = otitle
+                        option_titles_key.append(str(n))
+                        option_titles_val.append(otitle)
                         n += 1
                     q_cid.append(q_cid_t)
+                    q_type.append("string")
                     option_titles.append(option_titles_min)
 
                 if question_type in (6,):
@@ -367,6 +376,7 @@ class RequestAction(object):
                         set_value_option.save(ovalue)
                         # option_titles_min.append(None)
                     q_cid.append(q_cid_t)
+                    q_type.append("string")
                     option_titles.append(option_titles_min)
 
                 if question_type in (4,):
@@ -375,7 +385,9 @@ class RequestAction(object):
                     for q_ in q_struct.get("matrixrow_list"):
                         ocid = q_.get("cid")
                         q_cid_t = q_cid_t_t + ocid
-                        option_titles_min = {}
+                        option_titles_key = []
+                        option_titles_val = []
+                        option_titles_min = [option_titles_key, option_titles_val]
                         q_title_t = q_title + "%s" % html2text.html2text(q_.get("title")).replace("\n", "")
                         temp_struct_data.append(q_title_t)
                         n = 1
@@ -387,9 +399,11 @@ class RequestAction(object):
                                 ovalue["ovalue"] = n
                                 set_value_option.save(ovalue)
                             otitle = qos.get("title")
-                            option_titles_min[str(n)] = otitle
+                            option_titles_key.append(n)
+                            option_titles_val.append(otitle)
                             n += 1
                         q_cid.append(q_cid_t)
+                        q_type.append("int")
                         option_titles.append(option_titles_min)
 
                 if question_type in (5,):
@@ -398,7 +412,9 @@ class RequestAction(object):
                     for q_ in q_struct.get("matrixrow_list"):
                         ocid = q_.get("cid")
                         q_cid_t = q_cid_t_t + ocid
-                        option_titles_min = {}
+                        option_titles_key = []
+                        option_titles_val = []
+                        option_titles_min = [option_titles_key, option_titles_val]
                         q_title_t = q_title + "%s" % html2text.html2text(q_.get("title")).replace("\n", "")
                         temp_struct_data.append(q_title_t)
                         n = 1
@@ -407,12 +423,14 @@ class RequestAction(object):
                             val = set_value_option.find_one({"_id": ObjectId(oid)})
                             if not val:
                                 ovalue = document_option.find_one({"_id": ObjectId(oid)})
-                                ovalue["ovalue"] = n
+                                ovalue["ovalue"] = str(n)
                                 set_value_option.save(ovalue)
                             otitle = qos.get("title")
-                            option_titles_min[str(n)] = otitle
+                            option_titles_key.append(str(n))
+                            option_titles_val.append(otitle)
                             n += 1
                         q_cid.append(q_cid_t)
+                        q_type.append("string")
                         option_titles.append(option_titles_min)
 
                 if question_type in (8,):
@@ -431,13 +449,14 @@ class RequestAction(object):
                             # otitle = qos.get("title")
                             # option_titles_min.append(None)
                         q_cid.append(q_cid_t)
+                        q_type.append("string")
                         option_titles.append(option_titles_min)
 
                 if question_type in (50,):
                     q_cid_t = q_struct.get("cid")
                     q_cid_t_t = q_cid_t
                     for q_ in q_struct.get("option_list"):
-                        option_titles_min = []
+
                         q_title_t = q_title + "%s" % html2text.html2text(q_.get("title")).replace("\n", "")
                         temp_struct_data.append(q_title_t)
                         min_max = xrange(int(q_custom.get("min_answer_num", "1")),
@@ -445,6 +464,7 @@ class RequestAction(object):
                         ocid = q_.get("cid")
                         q_cid_t = q_cid_t_t + ocid
                         q_cid.append(q_cid_t)
+                        q_type.append("int")
                         option_titles_min.extend(min_max)
                         option_titles.append(option_titles_min)
 
@@ -452,7 +472,9 @@ class RequestAction(object):
                     q_cid_t = q_struct.get("cid")
                     q_cid_t_t = q_cid_t
                     for q_ in q_struct.get("option_list"):
-                        option_titles_min = {}
+                        option_titles_key = []
+                        option_titles_val = []
+                        option_titles_min = [option_titles_key, option_titles_val]
                         q_title_t = q_title + "%s" % html2text.html2text(q_.get("title")).replace("\n", "")
                         temp_struct_data.append(q_title_t)
                         ocid = q_.get("cid")
@@ -466,9 +488,11 @@ class RequestAction(object):
                                 ovalue = document_option.find_one({"_id": ObjectId(oid)})
                                 ovalue["ovalue"] = n
                                 set_value_option.save(ovalue)
-                            option_titles_min[str(n)] = otitle
+                            option_titles_key.append(n)
+                            option_titles_val.append(otitle)
                             n += 1
                         q_cid.append(q_cid_t)
+                        q_type.append("int")
                         option_titles.append(option_titles_min)
 
                 if question_type in (95,):
@@ -488,6 +512,7 @@ class RequestAction(object):
                                 set_value_option.save(ovalue)
                             # option_titles_min.append(None)
                         q_cid.append(q_cid_t)
+                        q_type.append("string")
                         option_titles.append(option_titles_min)
 
                 if question_type in (7,):
@@ -505,6 +530,7 @@ class RequestAction(object):
                             ocid = qo_.get("cid")
                             q_cid_t = q_cid_t_t + omcid + ocid
                             q_cid.append(q_cid_t)
+                            q_type.append("int")
                             option_titles_min.extend(min_max)
                             option_titles.append(option_titles_min)
 
@@ -526,15 +552,16 @@ class RequestAction(object):
                                 set_value_option.save(ovalue)
                                 # option_titles_min.append(None)
                             q_cid.append(q_cid_t)
+                            q_type.append("string")
                             option_titles.append(option_titles_min)
 
-        return temp_struct_data, option_titles, q_cid, lag
-    
+        return temp_struct_data, option_titles, q_cid, q_type, lag
+        
         
     def generator_options(self, pid, document_project):
         pass
         
-
+        
     def handle_data(self, aid, document_answer, document_question, document_question_struc, document_option,
                     document_option_matrix, document_project):
         temp_aid = {"_id": ObjectId(str(aid))}
@@ -848,7 +875,7 @@ class RequestAction(object):
         pid = result_answer.get('project_id')
         # 查找重复项
         # from collections import Counter
-        title_m, option_t, q_cid, lag = self.generator_option_spss(pid, document_project, document_option)
+        title_m, option_t, q_cid, q_type, lag = self.generator_option_spss(pid, document_project, document_option)
         set_value_option = getattr(self.mongo_collection_edy_spss_insert, "xyt_survey_option_set_value")
         tsd = {}
         # Counter(q_cid)
@@ -1144,6 +1171,7 @@ class RequestAction(object):
         tsd[u"v_list"] = v_list
         tsd[u"options"] = option_t
         tsd[u"k_list"] = title_m
+        tsd[u"q_type"] = q_type
         result = collection.save(tsd)
         if result:
             return "success"
