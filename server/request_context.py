@@ -240,10 +240,9 @@ class RequestAction(object):
                         ocid = q_.get("cid")
                         q_cid_t = q_cid_t_t + ocid
                         q_cid.append(q_cid_t)
-                        option_titles_min.extend(min_max)
-                        option_titles_min_v = map(lambda x: str(x), option_titles_min)
+                        option_titles_min.append(min_max)
+                        option_titles_min.append(map(lambda x: str(x), option_titles_min))
                         option_titles.append(option_titles_min)
-                        option_titles.append(option_titles_min_v)
                         
                 if question_type in (60,):
                     q_cid_t = q_struct.get("cid")
@@ -286,10 +285,9 @@ class RequestAction(object):
                             ocid = qo_.get("cid")
                             q_cid_t = q_cid_t_t + omcid + ocid
                             q_cid.append(q_cid_t)
-                            option_titles_min.extend(min_max)
-                            option_titles_min_v = map(lambda x: str(x), option_titles_min)
+                            option_titles_min.append(min_max)
+                            option_titles_min.append(map(lambda x: str(x), option_titles_min))
                             option_titles.append(option_titles_min)
-                            option_titles.append(option_titles_min_v)
 
                 if question_type in (100,):
                     q_cid_t = q_struct.get("cid")
@@ -469,10 +467,9 @@ class RequestAction(object):
                         q_cid_t = q_cid_t_t + ocid
                         q_cid.append(q_cid_t)
                         q_type.append("int")
-                        option_titles_min.extend(min_max)
-                        option_titles_min_v = map(lambda x: str(x), option_titles_min)
+                        option_titles_min.append(min_max)
+                        option_titles_min.append(map(lambda x: str(x), option_titles_min))
                         option_titles.append(option_titles_min)
-                        option_titles.append(option_titles_min_v)
 
                 if question_type in (60,):
                     q_cid_t = q_struct.get("cid")
@@ -537,10 +534,9 @@ class RequestAction(object):
                             q_cid_t = q_cid_t_t + omcid + ocid
                             q_cid.append(q_cid_t)
                             q_type.append("int")
-                            option_titles_min.extend(min_max)
-                            option_titles_min_v = map(lambda x: str(x), option_titles_min)
+                            option_titles_min.append(min_max)
+                            option_titles_min.append(map(lambda x: str(x), option_titles_min))
                             option_titles.append(option_titles_min)
-                            option_titles.append(option_titles_min_v)
 
                 if question_type in (100,):
                     q_cid_t = q_struct.get("cid")
