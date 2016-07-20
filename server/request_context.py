@@ -236,7 +236,7 @@ class RequestAction(object):
                         option_titles_min = []
                         q_title_t = q_title + "%s" % html2text.html2text(q_.get("title")).replace("\n", "")
                         temp_struct_data.append(q_title_t)
-                        min_max = xrange(int(q_custom.get("min_answer_num", "1")), int(q_custom.get("max_answer_num"))+1)
+                        min_max = range(int(q_custom.get("min_answer_num", "1")), int(q_custom.get("max_answer_num"))+1)
                         ocid = q_.get("cid")
                         q_cid_t = q_cid_t_t + ocid
                         q_cid.append(q_cid_t)
@@ -281,7 +281,7 @@ class RequestAction(object):
                             option_titles_min = []
                             q_title_t = html2text.html2text(q_title + "%s%s" % (qm_.get("title"), qo_.get("title"))).replace("\n", "")
                             temp_struct_data.append(q_title_t)
-                            min_max = xrange(int(q_custom.get("min_answer_num", "1")), int(q_custom.get("max_answer_num"))+1)
+                            min_max = range(int(q_custom.get("min_answer_num", "1")), int(q_custom.get("max_answer_num"))+1)
                             ocid = qo_.get("cid")
                             q_cid_t = q_cid_t_t + omcid + ocid
                             q_cid.append(q_cid_t)
@@ -461,7 +461,7 @@ class RequestAction(object):
 
                         q_title_t = q_title + "%s" % html2text.html2text(q_.get("title")).replace("\n", "")
                         temp_struct_data.append(q_title_t)
-                        min_max = xrange(int(q_custom.get("min_answer_num", "1")),
+                        min_max = range(int(q_custom.get("min_answer_num", "1")),
                                          int(q_custom.get("max_answer_num")) + 1)
                         ocid = q_.get("cid")
                         q_cid_t = q_cid_t_t + ocid
@@ -528,7 +528,7 @@ class RequestAction(object):
                             q_title_t = html2text.html2text(
                                     q_title + "%s%s" % (qm_.get("title"), qo_.get("title"))).replace("\n", "")
                             temp_struct_data.append(q_title_t)
-                            min_max = xrange(int(q_custom.get("min_answer_num", "1")),
+                            min_max = range(int(q_custom.get("min_answer_num", "1")),
                                              int(q_custom.get("max_answer_num")) + 1)
                             ocid = qo_.get("cid")
                             q_cid_t = q_cid_t_t + omcid + ocid
