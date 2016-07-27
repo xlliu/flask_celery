@@ -458,7 +458,7 @@ class RequestAction(object):
                     q_cid_t = q_struct.get("cid")
                     q_cid_t_t = q_cid_t
                     for q_ in q_struct.get("option_list"):
-
+                        option_titles_min = []
                         q_title_t = q_title + "%s" % html2text.html2text(q_.get("title")).replace("\n", "")
                         temp_struct_data.append(q_title_t)
                         min_max = range(int(q_custom.get("min_answer_num", "1")),
@@ -579,7 +579,7 @@ class RequestAction(object):
         tsd[u"开始时间"] = result_answer.get('starttime')
         tsd[u"结束时间"] = result_answer.get('endtime')
         tsd[u"序号"] = str(result_answer.get('_id'))
-        tsd[u"用户"] = result_answer.get('uuid')
+        tsd[u"用户"] = result_answer.get('uuid' )
         tsd[u"版本"] = lag
         temp_struct_data = OrderedDict(temp_struct_data.items()+zip(q_cid, [""]*len(q_cid)))
         # temp_struct_data[u"schoolCode"] = result_answer.get('schoolCode', 'None')
