@@ -14,8 +14,6 @@ sys.setdefaultencoding("utf-8")
 @time: 2016/4/14 0014 下午 4:40
 """
 import logging
-import re
-import gc
 
 import html2text
 from bson import ObjectId
@@ -23,19 +21,19 @@ from collections import OrderedDict
 
 from common.mongodb_conn import mongodb_conn
 
+
 class BreakException():
     pass
+
 
 class RequestAction(object):
     def __init__(self):
         self.logger = logging.getLogger("log_output")
         set_mongo_conn_edy = mongodb_conn("10.10.0.2", 27017, "xyt_survey", flag=0)
-        # set_mongo_conn_edy = mongodb_conn("120.131.64.225", 27017, "xyt_survey", flag=1)
         set_mongo_conn_edy_insert = mongodb_conn("10.10.0.2", 27017, "xyt_survey_data_two", flag=0)
-        set_mongo_conn_edy_spss_format_insert = mongodb_conn("10.10.0.2", 27017, "xyt_survey_data_two_spss_format", flag=0)
+        set_mongo_conn_edy_spss_format_insert = mongodb_conn("10.10.0.2", 27017, "xyt_survey_data_two_spss_format",
+                                                             flag=0)
         set_mongo_conn_edy_spss_insert = mongodb_conn("10.10.0.2", 27017, "xyt_survey_data_two_spss", flag=0)
-        # set_mongo_conn_edy = mongodb_conn("120.131.70.8", 27017, "xyt_survey_survey", flag=1)
-        # set_mongo_conn_edy = mongodb_conn("127.0.0.1", 27017, "xyt_survey")
         self.get_mongo_conn_edy = set_mongo_conn_edy.get_conn()
         self.get_mongo_conn_edy_insert = set_mongo_conn_edy_insert.get_conn()
         self.get_mongo_conn_edy_format_insert = set_mongo_conn_edy_spss_format_insert.get_conn()
@@ -44,16 +42,12 @@ class RequestAction(object):
         self.mongo_collection_edy_insert = set_mongo_conn_edy_insert.get_db()
         self.mongo_collection_edy_spss_format_insert = set_mongo_conn_edy_spss_format_insert.get_db()
         self.mongo_collection_edy_spss_insert = set_mongo_conn_edy_spss_insert.get_db()
-        
-        # set_mongo_conn = mongodb_conn("127.0.0.1", 27017, "xyt_survey")
-        # self.get_mongo_conn = set_mongo_conn.get_conn()
-        # self.mongo_collection = set_mongo_conn.get_db()
-        # mysql_conn = mysqldb_conn("localhost", 3306, "test").conn()
 
     def answers_action(self, aid):
         try:
             document_answer, document_question, document_question_struct, document_option, document_option_matrix, document_project = self.init_collection()
-            self.handle_data(aid, document_answer, document_question, document_question_struct, document_option,document_option_matrix, document_project)
+            self.handle_data(aid, document_answer, document_question, document_question_struct, document_option,
+                             document_option_matrix, document_project)
         finally:
             self.close_connector()
 
@@ -67,22 +61,24 @@ class RequestAction(object):
         # gc.disable()
         for answer in rdata:
             num += 1
-            self.logger.info("PROJECT_ACTION==> for project_data in a_num: %d, pid : %s, aid: %s" %(num, pid, answer["_id"]))
+            self.logger.info(
+                "PROJECT_ACTION==> for project_data in a_num: %d, pid : %s, aid: %s" % (num, pid, answer["_id"]))
             #     continue
             try:
                 self.handle_data(answer["_id"], document_answer, document_question, document_question_struct,
-                                 document_option,document_option_matrix, document_project)
+                                 document_option, document_option_matrix, document_project)
             except:
                 pass
         self.close_connector()
-        
+
     def answers_action_spss(self, aid):
         try:
             document_answer, document_question, document_question_struct, document_option, document_option_matrix, document_project = self.init_collection()
-            self.handle_data_spss(aid, document_answer, document_question, document_question_struct, document_option,document_option_matrix, document_project)
+            self.handle_data_spss(aid, document_answer, document_question, document_question_struct, document_option,
+                                  document_option_matrix, document_project)
         finally:
             self.close_connector()
-        
+
     def question_action_spss(self, pid, limit_num, skip_num):
         temp_id = {'project_id': pid}
         # 初始化数据库
@@ -93,11 +89,12 @@ class RequestAction(object):
         # gc.disable()
         for answer in rdata:
             num += 1
-            self.logger.info("PROJECT_ACTION==> for project_data_spss in a_num: %d, pid : %s, aid: %s" %(num, pid, answer["_id"]))
+            self.logger.info(
+                "PROJECT_ACTION==> for project_data_spss in a_num: %d, pid : %s, aid: %s" % (num, pid, answer["_id"]))
             #     continue
             try:
                 self.handle_data_spss(answer["_id"], document_answer, document_question, document_question_struct,
-                                 document_option,document_option_matrix, document_project)
+                                      document_option, document_option_matrix, document_project)
             except:
                 pass
         self.close_connector()
@@ -105,14 +102,13 @@ class RequestAction(object):
     # gc.enable()
     def all_action(self):
         document_answer, document_question, document_question_struct, document_option, document_option_matrix, document_project = self.init_collection()
-        rdata = document_project.find({},{"_id":1},no_cursor_timeout=True).limit(30).skip(20)
-        
-        num_p = 0 
-        for p_action in rdata:
-            self.logger.info("ALL_ACTION==> for all_data in p_num: %d, pid: %s" %(num_p, p_action["_id"]))
-            self.question_action(str(p_action["_id"]),1000000,0)
-            num_p += 1
+        rdata = document_project.find({}, {"_id": 1}, no_cursor_timeout=True).limit(30).skip(20)
 
+        num_p = 0
+        for p_action in rdata:
+            self.logger.info("ALL_ACTION==> for all_data in p_num: %d, pid: %s" % (num_p, p_action["_id"]))
+            self.question_action(str(p_action["_id"]), 1000000, 0)
+            num_p += 1
 
     def init_collection(self):
         document_answer = self.mongo_collection_edy.xyt_survey_answers
@@ -121,21 +117,13 @@ class RequestAction(object):
         document_option = self.mongo_collection_edy.xyt_survey_option
         document_option_matrix = self.mongo_collection_edy.xyt_survey_option_matrix
         document_project = self.mongo_collection_edy.xyt_survey_project
-        # document_answer = self.mongo_collection.xyt_survey_answers
-        # document_question = self.mongo_collection.xyt_survey_question
-        # document_option = self.mongo_collection.xyt_survey_option
-        # document_option_matrix = self.mongo_collection.xyt_survey_option_matrix
         return document_answer, document_question, document_question_struct, document_option, document_option_matrix, document_project
 
     def close_connector(self):
-        # if self.get_mongo_conn is not None:
-        #     self.get_mongo_conn.close()
         if self.get_mongo_conn_edy is not None:
             self.get_mongo_conn_edy.close()
         if self.get_mongo_conn_edy_insert is not None:
             self.get_mongo_conn_edy_insert.close()
-            # if db is not None:
-            #     mysql_conn.close()
 
     def generator_title(self, pid, document_project):
         p_struct = document_project.find_one({"_id": ObjectId(pid)})
@@ -191,14 +179,14 @@ class RequestAction(object):
                         ocid = q_.get("cid")
                         q_cid_t = q_cid_t_t + ocid
                         option_titles_min = []
-                        q_title_t = q_title +"%s" % html2text.html2text(q_.get("title")).replace("\n", "")
+                        q_title_t = q_title + "%s" % html2text.html2text(q_.get("title")).replace("\n", "")
                         temp_struct_data.append(q_title_t)
                         for qos in q_options:
                             otitle = qos.get("title")
                             option_titles_min.append(otitle)
                         q_cid.append(q_cid_t)
                         option_titles.append(option_titles_min)
-                        
+
                 if question_type in (5,):
                     q_cid_t = q_struct.get("cid")
                     q_cid_t_t = q_cid_t
@@ -206,7 +194,7 @@ class RequestAction(object):
                         ocid = q_.get("cid")
                         q_cid_t = q_cid_t_t + ocid
                         option_titles_min = []
-                        q_title_t = q_title +"%s" % html2text.html2text(q_.get("title")).replace("\n", "")
+                        q_title_t = q_title + "%s" % html2text.html2text(q_.get("title")).replace("\n", "")
                         temp_struct_data.append(q_title_t)
                         for qos in q_options:
                             otitle = qos.get("title")
@@ -228,7 +216,7 @@ class RequestAction(object):
                             option_titles_min.append(otitle)
                         q_cid.append(q_cid_t)
                         option_titles.append(option_titles_min)
-                        
+
                 if question_type in (50,):
                     q_cid_t = q_struct.get("cid")
                     q_cid_t_t = q_cid_t
@@ -236,14 +224,15 @@ class RequestAction(object):
                         option_titles_min = []
                         q_title_t = q_title + "%s" % html2text.html2text(q_.get("title")).replace("\n", "")
                         temp_struct_data.append(q_title_t)
-                        min_max = range(int(q_custom.get("min_answer_num", "1")), int(q_custom.get("max_answer_num"))+1)
+                        min_max = range(int(q_custom.get("min_answer_num", "1")),
+                                        int(q_custom.get("max_answer_num")) + 1)
                         ocid = q_.get("cid")
                         q_cid_t = q_cid_t_t + ocid
                         q_cid.append(q_cid_t)
                         option_titles_min.append(min_max)
                         option_titles_min.append(map(lambda x: str(x), min_max))
                         option_titles.append(option_titles_min)
-                        
+
                 if question_type in (60,):
                     q_cid_t = q_struct.get("cid")
                     q_cid_t_t = q_cid_t
@@ -257,7 +246,7 @@ class RequestAction(object):
                             option_titles_min.append([])
                         q_cid.append(q_cid_t)
                         option_titles.append(option_titles_min)
-                        
+
                 if question_type in (95,):
                     q_cid_t = q_struct.get("cid")
                     q_cid_t_t = q_cid_t
@@ -279,9 +268,11 @@ class RequestAction(object):
                         omcid = qm_.get("cid")
                         for qo_ in q_struct.get("option_list"):
                             option_titles_min = []
-                            q_title_t = html2text.html2text(q_title + "%s%s" % (qm_.get("title"), qo_.get("title"))).replace("\n", "")
+                            q_title_t = html2text.html2text(
+                                q_title + "%s%s" % (qm_.get("title"), qo_.get("title"))).replace("\n", "")
                             temp_struct_data.append(q_title_t)
-                            min_max = range(int(q_custom.get("min_answer_num", "1")), int(q_custom.get("max_answer_num"))+1)
+                            min_max = range(int(q_custom.get("min_answer_num", "1")),
+                                            int(q_custom.get("max_answer_num")) + 1)
                             ocid = qo_.get("cid")
                             q_cid_t = q_cid_t_t + omcid + ocid
                             q_cid.append(q_cid_t)
@@ -296,7 +287,8 @@ class RequestAction(object):
                         omcid = qm_.get("cid")
                         for qo_ in q_struct.get("option_list"):
                             option_titles_min = []
-                            q_title_t = html2text.html2text(q_title + "%s%s" % (qm_.get("title"), qo_.get("title"))).replace("\n", "")
+                            q_title_t = html2text.html2text(
+                                q_title + "%s%s" % (qm_.get("title"), qo_.get("title"))).replace("\n", "")
                             temp_struct_data.append(q_title_t)
                             ocid = qo_.get("cid")
                             q_cid_t = q_cid_t_t + omcid + ocid
@@ -306,8 +298,7 @@ class RequestAction(object):
                             option_titles.append(option_titles_min)
 
         return temp_struct_data, option_titles, q_cid, lag
-        
-        
+
     def generator_option_spss(self, pid, document_project, document_option):
         set_value_option = getattr(self.mongo_collection_edy_spss_insert, "xyt_survey_option_set_value")
         p_struct = document_project.find_one({"_id": ObjectId(pid)})
@@ -342,7 +333,7 @@ class RequestAction(object):
                         ovalue["ovalue"] = n
                         set_value_option.save(ovalue)
                         option_titles_key.append(n)
-                        option_titles_val.append(otitle)
+                        option_titles_val.append(html2text.html2text(otitle).replace("\n", ""))
                         n += 1
                     q_cid.append(q_cid_t)
                     q_type.append("int")
@@ -362,7 +353,7 @@ class RequestAction(object):
                         set_value_option.save(ovalue)
                         otitle = qos.get("title")
                         option_titles_key.append(str(n))
-                        option_titles_val.append(otitle)
+                        option_titles_val.append(html2text.html2text(otitle).replace("\n", ""))
                         n += 1
                     q_cid.append(q_cid_t)
                     q_type.append("string")
@@ -376,7 +367,6 @@ class RequestAction(object):
                         oid = qos.get("_id")
                         ovalue = document_option.find_one({"_id": ObjectId(oid)})
                         set_value_option.save(ovalue)
-                        # option_titles_min.append(None)
                     q_cid.append(q_cid_t)
                     q_type.append("string")
                     option_titles.append(option_titles_min)
@@ -402,7 +392,7 @@ class RequestAction(object):
                                 set_value_option.save(ovalue)
                             otitle = qos.get("title")
                             option_titles_key.append(n)
-                            option_titles_val.append(otitle)
+                            option_titles_val.append(html2text.html2text(otitle).replace("\n", ""))
                             n += 1
                         q_cid.append(q_cid_t)
                         q_type.append("int")
@@ -429,7 +419,7 @@ class RequestAction(object):
                                 set_value_option.save(ovalue)
                             otitle = qos.get("title")
                             option_titles_key.append(str(n))
-                            option_titles_val.append(otitle)
+                            option_titles_val.append(html2text.html2text(otitle).replace("\n", ""))
                             n += 1
                         q_cid.append(q_cid_t)
                         q_type.append("string")
@@ -462,7 +452,7 @@ class RequestAction(object):
                         q_title_t = q_title + "%s" % html2text.html2text(q_.get("title")).replace("\n", "")
                         temp_struct_data.append(q_title_t)
                         min_max = range(int(q_custom.get("min_answer_num", "1")),
-                                         int(q_custom.get("max_answer_num")) + 1)
+                                        int(q_custom.get("max_answer_num")) + 1)
                         ocid = q_.get("cid")
                         q_cid_t = q_cid_t_t + ocid
                         q_cid.append(q_cid_t)
@@ -492,7 +482,7 @@ class RequestAction(object):
                                 ovalue["ovalue"] = n
                                 set_value_option.save(ovalue)
                             option_titles_key.append(n)
-                            option_titles_val.append(otitle)
+                            option_titles_val.append(html2text.html2text(otitle).replace("\n", ""))
                             n += 1
                         q_cid.append(q_cid_t)
                         q_type.append("int")
@@ -513,7 +503,7 @@ class RequestAction(object):
                             if not val:
                                 ovalue = document_option.find_one({"_id": ObjectId(oid)})
                                 set_value_option.save(ovalue)
-                            # option_titles_min.append(None)
+                                # option_titles_min.append(None)
                         q_cid.append(q_cid_t)
                         q_type.append("string")
                         option_titles.append(option_titles_min)
@@ -526,10 +516,10 @@ class RequestAction(object):
                         for qo_ in q_struct.get("option_list"):
                             option_titles_min = []
                             q_title_t = html2text.html2text(
-                                    q_title + "%s%s" % (qm_.get("title"), qo_.get("title"))).replace("\n", "")
+                                q_title + "%s%s" % (qm_.get("title"), qo_.get("title"))).replace("\n", "")
                             temp_struct_data.append(q_title_t)
                             min_max = range(int(q_custom.get("min_answer_num", "1")),
-                                             int(q_custom.get("max_answer_num")) + 1)
+                                            int(q_custom.get("max_answer_num")) + 1)
                             ocid = qo_.get("cid")
                             q_cid_t = q_cid_t_t + omcid + ocid
                             q_cid.append(q_cid_t)
@@ -546,7 +536,7 @@ class RequestAction(object):
                         for qo_ in q_struct.get("option_list"):
                             option_titles_min = None
                             q_title_t = html2text.html2text(
-                                    q_title + "%s%s" % (qm_.get("title"), qo_.get("title"))).replace("\n", "")
+                                q_title + "%s%s" % (qm_.get("title"), qo_.get("title"))).replace("\n", "")
                             temp_struct_data.append(q_title_t)
                             ocid = qo_.get("cid")
                             q_cid_t = q_cid_t_t + omcid + ocid
@@ -560,16 +550,11 @@ class RequestAction(object):
                             option_titles.append(option_titles_min)
 
         return temp_struct_data, option_titles, q_cid, q_type, lag
-        
-        
-    def generator_options(self, pid, document_project):
-        pass
-        
-        
+
     def handle_data(self, aid, document_answer, document_question, document_question_struc, document_option,
                     document_option_matrix, document_project):
         temp_aid = {"_id": ObjectId(str(aid))}
-        #self.logger.info("inot func handle_data, temp_aid: %s" %temp_aid)
+        # self.logger.info("inot func handle_data, temp_aid: %s" %temp_aid)
 
         temp_struct_data = OrderedDict()
         result_answer = document_answer.find_one(temp_aid)
@@ -579,9 +564,9 @@ class RequestAction(object):
         tsd[u"开始时间"] = result_answer.get('starttime')
         tsd[u"结束时间"] = result_answer.get('endtime')
         tsd[u"序号"] = str(result_answer.get('_id'))
-        tsd[u"用户"] = result_answer.get('uuid' )
+        tsd[u"用户"] = result_answer.get('uuid')
         tsd[u"版本"] = lag
-        temp_struct_data = OrderedDict(temp_struct_data.items()+zip(q_cid, [""]*len(q_cid)))
+        temp_struct_data = OrderedDict(temp_struct_data.items() + zip(q_cid, [""] * len(q_cid)))
         # temp_struct_data[u"schoolCode"] = result_answer.get('schoolCode', 'None')
         answers = result_answer.get('answers')
         if not answers:
@@ -607,7 +592,7 @@ class RequestAction(object):
 
             q_title = ""
             question_type = None
-            option = {} 
+            option = {}
             for k, v in question.items():
                 if "qid" == k:
                     temp_qid = {"_id": ObjectId(str(v))}
@@ -622,7 +607,7 @@ class RequestAction(object):
                     # q_title_temp_kk = html2text.html2text(q_title_temp_kk)
                     # q_title = q_title_temp_kk
                     # q_title = q_title.replace(r".", "d")
-                    
+
                     q_title_temp_kk = q_struct.get('cid')
                     q_title = q_title_temp_kk
                     question_type = q_struct.get('question_type')
@@ -642,7 +627,7 @@ class RequestAction(object):
                         temp_value_id = {"_id": ObjectId(str(v[0]))}
                         a_context = document_option.find_one(temp_value_id)
                         a_value = a_context.get('title')
-                        #temp_struct_data[q_title] = html2text.html2text(a_value)
+                        # temp_struct_data[q_title] = html2text.html2text(a_value)
                         temp_struct_data[q_title] = html2text.html2text(a_value)
                         break
                     # 多项选择题3
@@ -659,7 +644,7 @@ class RequestAction(object):
                             a_context = document_option.find_one(temp_value_id)
                             a_value_temp.append(a_context.get('title'))
                         a_value = a_value_temp
-                        #temp_struct_data[q_title] = html2text.html2text(",".join(a_value))
+                        # temp_struct_data[q_title] = html2text.html2text(",".join(a_value))
                         temp_struct_data[q_title] = html2text.html2text(",".join(a_value))
                         break
                     # 表格单选题4------
@@ -673,15 +658,15 @@ class RequestAction(object):
                     }
                     """
                     if question_type == 4:
-                    # if question_type == 5:
+                        # if question_type == 5:
                         for k_4, v_4 in v.items():
                             q_title_temp = document_option_matrix.find_one({"_id": ObjectId(str(k_4))}).get('cid')
                             temp_value_id = {"_id": ObjectId(str(v_4[0]))}
                             a_context = document_option.find_one(temp_value_id)
                             a_value = a_context.get('title')
 
-                            #temp_struct_data[
-                        #        q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = html2text.html2text(a_value)
+                            # temp_struct_data[
+                            #        q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = html2text.html2text(a_value)
                             temp_struct_data[
                                 q_title + "%s" % q_title_temp] = html2text.html2text(a_value)
                         break
@@ -696,7 +681,7 @@ class RequestAction(object):
                     }
                     """
                     if question_type == 5:
-                    # if question_type == 4:
+                        # if question_type == 4:
                         for k_5, v_5 in v.items():
                             q_title_temp = document_option_matrix.find_one({"_id": ObjectId(str(k_5))}).get('cid')
                             a_value_temp = []
@@ -706,7 +691,7 @@ class RequestAction(object):
                                 a_value_temp.append(a_context.get('title'))
                             a_value = a_value_temp
 
-                            #temp_struct_data[q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = html2text.html2text(",".join(a_value))
+                            # temp_struct_data[q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = html2text.html2text(",".join(a_value))
                             temp_struct_data[q_title + "%s" % q_title_temp] = html2text.html2text(",".join(a_value))
                         break
                     # 选择排序题60
@@ -721,7 +706,9 @@ class RequestAction(object):
                     """
                     if question_type == 60:
                         for k_60, v_60 in v.items():
-                            q_title_temp = document_option.find_one({"_id": ObjectId(str(k_60)[7:] if "option_" == str(k_60)[0:7] else str(k_60))}).get('cid')
+                            q_title_temp = document_option.find_one(
+                                {"_id": ObjectId(str(k_60)[7:] if "option_" == str(k_60)[0:7] else str(k_60))}).get(
+                                'cid')
                             temp_struct_data[q_title + "%s" % q_title_temp] = v_60[0]
                             # temp_struct_data[q_title+"_%s" % q_title_temp] = "类型60，矩阵跳过"
                         break  # 单项打分题50
@@ -761,10 +748,10 @@ class RequestAction(object):
                             for k_7k, v_7v in v_7.items():
                                 q_title_temp_2 = document_option.find_one({"_id": ObjectId(str(k_7k))}).get('cid')
 
-                                #temp_struct_data[html2text.html2text(q_title + "_%s_%s" % (q_title_temp_1,
+                                # temp_struct_data[html2text.html2text(q_title + "_%s_%s" % (q_title_temp_1,
                                 #                                       q_title_temp_2)).replace(r".", "d")] = html2text.html2text(v_7v)
                                 temp_struct_data[q_title + "%s%s" % (q_title_temp_1,
-                                                                       q_title_temp_2)] = html2text.html2text(v_7v)
+                                                                     q_title_temp_2)] = html2text.html2text(v_7v)
                         break
                     # 单项填空题6 多行文本题6
                     """
@@ -783,7 +770,7 @@ class RequestAction(object):
                     if question_type == 6:
                         a_value = v.values()[0]
 
-                        #temp_struct_data[q_title] = html2text.html2text(a_value)
+                        # temp_struct_data[q_title] = html2text.html2text(a_value)
                         temp_struct_data[q_title] = html2text.html2text(a_value)
                         break
                     # 多项填空题95
@@ -800,7 +787,7 @@ class RequestAction(object):
                         for k_95, v_95 in v.items():
                             q_title_temp = document_option.find_one({"_id": ObjectId(str(k_95[0:-5]))}).get('cid')
 
-                            #temp_struct_data[q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = html2text.html2text(v_95)
+                            # temp_struct_data[q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = html2text.html2text(v_95)
                             temp_struct_data[q_title + "%s" % q_title_temp] = html2text.html2text(v_95)
                         break
                     # 表格填空题100
@@ -825,11 +812,11 @@ class RequestAction(object):
                             for k_100k, v_100v in v_100.items():
                                 q_title_temp_2 = document_option.find_one({"_id": ObjectId(str(k_100k))}).get('cid')
 
-                                #temp_struct_data[
+                                # temp_struct_data[
                                 #    html2text.html2text(q_title + "_%s_%s" % (q_title_temp_1,
                                 #                          q_title_temp_2)).replace(r".", "d")] = html2text.html2text(v_100v)
                                 temp_struct_data[
-                                    q_title + "%s%s" % (q_title_temp_1,q_title_temp_2)] = html2text.html2text(v_100v)
+                                    q_title + "%s%s" % (q_title_temp_1, q_title_temp_2)] = html2text.html2text(v_100v)
                         break
                     """
                     {
@@ -857,20 +844,19 @@ class RequestAction(object):
             self.logger.info("============ delete: %s ============" % str(temp_aid))
             collection.delete_many({"序号": str(result_answer.get('_id'))})
         self.logger.info("********==== handle: %s ====********" % str(temp_aid))
-        #k_list = temp_struct_data.keys()
+        # k_list = temp_struct_data.keys()
         v_list = temp_struct_data.values()
         tsd["k_pid"] = q_cid
         tsd["v_list"] = v_list
-        #temp_struct_data["options"] = option_t
+        # temp_struct_data["options"] = option_t
         tsd["k_list"] = title_m
         result = collection.insert_one(tsd)
         if result:
-           return "success"
+            return "success"
         return "false"
-        
-        
+
     def handle_data_spss(self, aid, document_answer, document_question, document_question_struc, document_option,
-                    document_option_matrix, document_project):
+                         document_option_matrix, document_project):
         temp_aid = {"_id": ObjectId(str(aid))}
         # self.logger.info("inot func handle_data, temp_aid: %s" %temp_aid)
 
@@ -928,10 +914,6 @@ class RequestAction(object):
                         if not q_struct:
                             self.logger.info("next return")
                             return
-                    # q_title_temp_kk = q_struct.get('title')
-                    # q_title_temp_kk = html2text.html2text(q_title_temp_kk)
-                    # q_title = q_title_temp_kk
-                    # q_title = q_title.replace(r".", "d")
 
                     q_title_temp_kk = q_struct.get('cid')
                     q_title = q_title_temp_kk
@@ -939,7 +921,6 @@ class RequestAction(object):
                     break
 
             for k, v in question.items():
-                # self.logger.info("Into deal with value")
                 if "answer" == k:
                     # 单项选择题2
                     """
@@ -1017,7 +998,8 @@ class RequestAction(object):
                             a_value = a_value_temp
 
                             # temp_struct_data[q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = html2text.html2text(",".join(a_value))
-                            temp_struct_data[q_title + "%s" % q_title_temp] = html2text.html2text(",".join([str(v) for v in a_value]))
+                            temp_struct_data[q_title + "%s" % q_title_temp] = html2text.html2text(
+                                ",".join([str(v) for v in a_value]))
                         break
                     # 选择排序题60
                     """
@@ -1032,8 +1014,8 @@ class RequestAction(object):
                     if question_type == 60:
                         for k_60, v_60 in v.items():
                             q_title_temp = document_option.find_one(
-                                    {"_id": ObjectId(str(k_60)[7:] if "option_" == str(k_60)[0:7] else str(k_60))}).get(
-                                    'cid')
+                                {"_id": ObjectId(str(k_60)[7:] if "option_" == str(k_60)[0:7] else str(k_60))}).get(
+                                'cid')
                             temp_struct_data[q_title + "%s" % q_title_temp] = v_60[0]
                             # temp_struct_data[q_title+"_%s" % q_title_temp] = "类型60，矩阵跳过"
                         break  # 单项打分题50
