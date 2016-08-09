@@ -951,7 +951,7 @@ class RequestAction(object):
                             a_value_temp.append(a_context.get('ovalue'))
                         a_value = a_value_temp
                         # temp_struct_data[q_title] = html2text.html2text(",".join(a_value))
-                        temp_struct_data[q_title] = html2text.html2text(",".join([str(v) for v in a_value]))
+                        temp_struct_data[q_title] = ",".join([str(v) for v in a_value])
                         break
                     # 表格单选题4------
                     """
@@ -998,8 +998,7 @@ class RequestAction(object):
                             a_value = a_value_temp
 
                             # temp_struct_data[q_title + "_%s" % html2text.html2text(q_title_temp).replace(r".", "d")] = html2text.html2text(",".join(a_value))
-                            temp_struct_data[q_title + "%s" % q_title_temp] = html2text.html2text(
-                                ",".join([str(v) for v in a_value]))
+                            temp_struct_data[q_title + "%s" % q_title_temp] = ",".join([str(v) for v in a_value])
                         break
                     # 选择排序题60
                     """
