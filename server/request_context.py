@@ -316,27 +316,34 @@ class RequestAction(object):
                 q_title_temp = q_struct.get("title")
                 q_title_temp = html2text.html2text(q_title_temp).replace("\n", "")
                 q_title = q_title_temp
-
                 if question_type == 70:
                     pass
                 if question_type in (2,):
+                    q_type_temp = "int"
                     q_cid_t = q_struct.get("cid")
                     option_titles_key = []
                     option_titles_val = []
                     option_titles_min = [option_titles_key, option_titles_val]
                     temp_struct_data.append(q_title)
                     n = 1
+
+                    if [1 for qos in q_options if qos.get("is_open")]:
+                        q_type_temp = "string"
+
                     for qos in q_options:
+                        num = n
+                        if q_type_temp == "string":
+                            num = str(n)
                         otitle = qos.get("title")
                         oid = qos.get("_id")
                         ovalue = document_option.find_one({"_id": ObjectId(oid)})
-                        ovalue["ovalue"] = n
+                        ovalue["ovalue"] = num
                         set_value_option.save(ovalue)
-                        option_titles_key.append(n)
+                        option_titles_key.append(num)
                         option_titles_val.append(html2text.html2text(otitle).replace("\n", ""))
                         n += 1
+                    q_type.append(q_type_temp)
                     q_cid.append(q_cid_t)
-                    q_type.append("int")
                     option_titles.append(option_titles_min)
 
                 if question_type in (3,):
@@ -869,7 +876,7 @@ class RequestAction(object):
         set_value_option = getattr(self.mongo_collection_edy_spss_insert, "xyt_survey_option_set_value")
         tsd = {}
         # Counter(q_cid)
-        # print [qc for qc in q_cid if q_cid.count(qc)==2]
+        # print [qc for qc in q_cid if q_cid.count(qc)>1]
         #
         # print 'dfsfdsfdsfsdfdsf'
         tsd[u"开始时间"] = result_answer.get('starttime')
@@ -933,6 +940,8 @@ class RequestAction(object):
                         temp_value_id = {"_id": ObjectId(str(v[0]))}
                         a_context = set_value_option.find_one(temp_value_id)
                         a_value = a_context.get('ovalue')
+                        if a_context.get("is_open"):
+                            a_value = ",".join([a_value, str(v[1])])
                         # temp_struct_data[q_title] = html2text.html2text(a_value)
                         temp_struct_data[q_title] = a_value
                         break
